@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         curr_cord = curr_cord->next;
         curr_cord->next = NULL;
     }
-    create_clusters();
+    struct cluster* head_cluster = create_clusters();
 
     for(int i=0;i<iter;i++){
 
@@ -71,7 +71,9 @@ int main(int argc, char **argv)
 
 }
     //2
-    struct vector* create_clusters(){
+    //guy
+    struct vector* create_clusters()
+    {
 
     struct vector *clusters=malloc(sizeof(struct vector*)*k);
     
@@ -79,6 +81,7 @@ int main(int argc, char **argv)
     }
 
     //3 compute point distance from every point and update points index;
+    //noam
     void update_points(struct vector* clusters,struct vector* head_vec){
         struct vector* current;
         current=head_vec;
@@ -99,6 +102,7 @@ int main(int argc, char **argv)
     }
     }
     //4
+    //guy
     int  update_clusters(struct vector* clusters,double epsilon){
 
         return 0;
@@ -106,6 +110,7 @@ int main(int argc, char **argv)
 
     move point();
     //5 distance between points
+    //noam
     double distance(struct vector* x,struct vector* y){
 
             return distance;
