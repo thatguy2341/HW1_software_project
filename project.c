@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-# include <math.h>
+#include <math.h>
 
 struct cord
 {
@@ -18,15 +18,25 @@ struct cluster{
     struct vector *sum;
     int points_assigned;
 }
-int main(int argc, char **argv)
-{
+int main(int argc, char *argv[])
+{   //input reading.
+    int k=atoi(argv[1]);
+    
+    int iter=atoi(argv[2]);
 
+    //create clusters points
+    struct cluster* head_cluster = create_clusters(argv[3],k);
+    
+    //inputfile reader from std_in
+    //creating points
     struct vector *head_vec, *curr_vec, *next_vec;
     struct cord *head_cord, *curr_cord, *next_cord;
-    int i, j, rows = 0, cols;
+    int counter=0;
+    int i=0, j=0 , cols=0;
     double n;
     char c;
-
+    
+    
     head_cord = malloc(sizeof(struct cord));
     curr_cord = head_cord;
     curr_cord->next = NULL;
@@ -34,8 +44,6 @@ int main(int argc, char **argv)
     head_vec = malloc(sizeof(struct vector));
     curr_vec = head_vec;
     curr_vec->next = NULL;
-
-
     while (scanf("%lf%c", &n, &c) == 2)
     {
 
@@ -43,6 +51,8 @@ int main(int argc, char **argv)
         {
             curr_cord->value = n;
             curr_vec->cords = head_cord;
+            counter++;
+           
             curr_vec->next = malloc(sizeof(struct vector));
             curr_vec = curr_vec->next;
             curr_vec->next = NULL;
@@ -57,7 +67,18 @@ int main(int argc, char **argv)
         curr_cord = curr_cord->next;
         curr_cord->next = NULL;
     }
-    struct cluster* head_cluster = create_clusters();
+    
+    //checking correct input
+    if(k<=1||k>=counter){
+        printf("Incorrect number of clusters!")
+        return 0;
+    }
+    if(iter<=1||iter>=800){
+        printf("Incorrect maximum iteration!");
+        return 0;
+    }
+
+   //main loop
 
     for(int i=0;i<iter;i++){
 
@@ -67,15 +88,16 @@ int main(int argc, char **argv)
     }
 
 }
-    //2
+    //2 recieve args[2] and for each line create cluster_points and add to clusters
     //guy
-    struct vector* create_clusters()
-    {
+    struct clusdter* create_clusters(char* cluster_input,int k){
 
-    struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
+        struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
+    }
     
 
-    }
+    
+    
 
     //3 compute point distance from every point and update points index;
     //noam
