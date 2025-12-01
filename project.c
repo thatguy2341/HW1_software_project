@@ -23,10 +23,6 @@ int main(int argc, char *argv[])
     int k=atoi(argv[1]);
     double epsilon=0.001;
     int iter=atoi(argv[2]);
-
-    //create clusters points
-    struct cluster* clusters =  create_clusters(argv[3],k);
-    
     //inputfile reader from std_in
     //creating points
     struct vector *head_vec, *curr_vec, *next_vec;
@@ -77,7 +73,8 @@ int main(int argc, char *argv[])
         printf("Incorrect maximum iteration!");
         return 0;
     }
-
+    //create clusters points
+    struct cluster* clusters =  create_clusters(argv[3],k,head_vec);
    //main loop
 
     for(int i=0;i<iter;i++){
@@ -91,9 +88,15 @@ int main(int argc, char *argv[])
 }
     //2 recieve args[2] and for each line create cluster_points and add to clusters
     //guy
-    struct clusdter* create_clusters(char* cluster_input,int k){
-
+    struct clusdter* create_clusters(char* cluster_input,int k,struct vector* head_vec){
+        struct vector* current=head_vec;
+        //need to crate vector in the right size woth all zeros.
+        struct vector zero;
+        //need to assign the first k point as clusters
         struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
+        for(int i=0;i<k;i++){
+ 
+        }
     }
     
 
