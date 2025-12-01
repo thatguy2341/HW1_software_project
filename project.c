@@ -17,15 +17,15 @@ struct cluster{
     struct vector *point;
     struct vector *sum;
     int points_assigned;
-}
+};
 int main(int argc, char *argv[])
 {   //input reading.
     int k=atoi(argv[1]);
-    
+    double epsilon=0.001;
     int iter=atoi(argv[2]);
 
     //create clusters points
-    struct cluster* head_cluster = create_clusters(argv[3],k);
+    struct cluster* clusters =  create_clusters(argv[3],k);
     
     //inputfile reader from std_in
     //creating points
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     
     //checking correct input
     if(k<=1||k>=counter){
-        printf("Incorrect number of clusters!")
+        printf("Incorrect number of clusters!");
         return 0;
     }
     if(iter<=1||iter>=800){
@@ -82,11 +82,12 @@ int main(int argc, char *argv[])
 
     for(int i=0;i<iter;i++){
 
-        distance();
-        int has_changed update_clusters(clusters,head_vec,epsilon);
+        update_points(clusters,head_vec,k);
+        int has_changed = update_clusters(clusters,epsilon);
         if(has_changed==0){break;}
     }
-
+    print_clusters(clusters,k);
+    return 0;
 }
     //2 recieve args[2] and for each line create cluster_points and add to clusters
     //guy
@@ -101,7 +102,7 @@ int main(int argc, char *argv[])
 
     //3 compute point distance from every point and update points index;
     //noam
-    void update_points(struct cluster* clusters,struct vector* head_vec){
+    void update_points(struct cluster* clusters,struct vector* head_vec, int k){
         struct vector* current;
         current=head_vec;
 
@@ -127,8 +128,9 @@ int main(int argc, char *argv[])
                 clusters[next_cluster_index].points_assigned++;
             }
             //move to next point
-            current=current.next;
+            current=current->next;
         }
+    }
     //add two vectors from same size of linked list, operation is -1 for subtract 1 for add
     void add_vector(struct vector* base,struct vector* add,int operation){
         
@@ -139,9 +141,9 @@ int main(int argc, char *argv[])
             curr_base_cord->value+=curr_add_cord->value*(operation);
             curr_base_cord=curr_base_cord->next;
             curr_add_cord=curr_add_cord->next;
+            }
         }
-    }
-    }
+    
     //4
     //guy
     int  update_clusters(struct cluster* clusters,double epsilon){
@@ -149,7 +151,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    move point();
+    
     //5 distance between points
     //noam
     double distance(struct vector* x,struct vector* y){
@@ -161,10 +163,12 @@ int main(int argc, char *argv[])
             double diff=(x_current_cord->value)-(y_current_cord->value);
             sum_square+=diff*diff;
             y_current_cord=y_current_cord->next;
-            x_current_cord=x_current_cord->next
+            x_current_cord=x_current_cord->next;
         }
         distance=sqrt(sum_square);
         return distance;
     }
+    //6 print clusters
+    void print_clusters(struct cluster* clusters,int k);
 
  
