@@ -3,17 +3,23 @@
 import sys
 import math
 
-
+#compute distance between two vectors.
 def distance(vector1, vector2):
 	distance =0.0
 	for i in range(len(vector1)):
 		distance += (vector1[i]-vector2[i])**2
 	return math.sqrt(distance)
-
-def print_clusters(clusters)
-
-def	 updated_points(points, clusters, clusters_sum):
+#print the clusters, each in a row
+def print_clusters(clusters):
+	for cluster in clusters:
+		st=""
+		for x in range(len(cluster)):
+		st+='{0:.4f}'.format(cluster[x])
+		print(st)
+#asigned each point to her closest cluster, and update clusters_sum and clusters_count if needed
+def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count):
 	for t in range(len(points)):
+		
 		min_dist = distance(points[t], clusters[0])
 		closest_cluster = 0
 
@@ -22,17 +28,19 @@ def	 updated_points(points, clusters, clusters_sum):
 			if (dist < min_dist):
 				min_dist = dist
 				closest_cluster = i
+		
 		before_cluster = points_to_clusters[t]
 		points_to_clusters[t]= closest_cluster
+		
 		if before_cluster != closest_cluster:
-			for j in range(len(p)):
-				clusters_sum[closest_cluster][j] += p[j]
-				clusters_sum[before_cluster][j] -= p[j]
+			for j in range(len(points[t])):
+				clusters_sum[closest_cluster][j] += points[t][j]
+				clusters_sum[before_cluster][j] -= points[t][j]
 				clusters_count[closest_cluster] += 1
 				clusters_count[before_cluster] -= 1
 
-
-def updated_clusters(clusters, clusters_sum, epsilon):
+#update clusters after the recent change in the assigned points,returning the max change in any cluster
+def updated_clusters(clusters, clusters_sum,clusters_count, epsilon):
 	max_diff = 0.0
 	for i in range (len (clusters)):
 		new_cluster = [0.0 for x in range(len(clusters[0]))]	
@@ -47,7 +55,7 @@ def updated_clusters(clusters, clusters_sum, epsilon):
 			max_diff = diff
 		clusters[i] = new_cluster
 	return max_diff
-	
+#reaf point from std
 def read_points():
 	#pts is list of list of floats
 	points = []
@@ -79,25 +87,27 @@ def kmeans(k: int, iters: int):
 	for p in points:
 		if len(p) != dim:
 			print("Inconsistent dimensions in input")
-			return None
-	#contidions for k and iters
-	if k <= 1 or k >= points_num:
-		print("Incorrect number of clusters!")
-		return None
-	if iters <= 1 or iters >= 800:
-		print("Incorrect maximum iteration!")
-		return None
-
+			return 0
+	
+	if(k<=1 or k>=len(points)):
+        print("Incorrect number of clusters!")
+        return 0
+    
+    if(iter<=1 or iter>=800):
+        print("Incorrect maximum iteration!")
+        return 0
+	#clusters are the first k points
 	clusters = points[:k]
+	#initialize clusters_sum and clusters_count,updating happens in updated_points
 	clusters_sum=[[0.0]*dim for x in range(k)]
 	clusters_count=[0 for x in range(k)]
-
+	#main algo loop
 	for i in range (iters)
 		updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count)
 		diff = updated_clusters(clusters,clusters_sum,clusters_count,epsilon)
 		if(diff<epsilon)
 			break
-	
+	#we finish updating, printing the clusters
 	print_clusters(clusters)
 	return 0
 
@@ -114,14 +124,8 @@ if __name__ == '__main__':
 		print("k and iters must be integers")
 		return 0
 	
-	if(k<=1 or k>=counter):
-        print("Incorrect number of clusters!")
-        return 0
-    
-    if(iter<=1 or iter>=800):
-        print("Incorrect maximum iteration!")
-        return 0
+
     
 	kmeans(k, iters)
 
-	return 0
+	sys.exit(0)
