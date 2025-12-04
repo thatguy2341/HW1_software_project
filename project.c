@@ -12,6 +12,7 @@ struct vector
     double current_distance;
     struct vector *next;
     struct cord *cords;
+   
 };
 struct cluster{
     struct vector *point;
@@ -76,14 +77,19 @@ int main(int argc, char *argv[])
     //create clusters points
     struct cluster* clusters =  create_clusters(argv[3],k,head_vec);
    //main loop
-
+    
     for(int i=0;i<iter;i++){
 
         update_points(clusters,head_vec,k);
-        int has_changed = update_clusters(clusters,epsilon);
-        if(has_changed==0){break;}
+        double max_changed = update_clusters(clusters,epsilon);
+        if(max_changed<epsilon){
+            break;
+        }
+        
     }
+    
     print_clusters(clusters,k);
+    //free memory
     return 0;
 }
     //2 recieve args[2] and for each line create cluster_points and add to clusters
@@ -112,12 +118,13 @@ int main(int argc, char *argv[])
         while(current!=NULL){
             
             double min=distance(current,clusters[0].point);
+        
             int current_cluster=current->cluster_index;
             int next_cluster_index=0;
             //check which cluster is the closest to the point
             for(int i=1;i<k;i++){ 
                 double temp=distance(current, clusters[i].point);
-                if(temp<min){   
+                if(temp<min){  
                     min=temp;
                     next_cluster_index=i;
                 }
@@ -147,9 +154,9 @@ int main(int argc, char *argv[])
             }
         }
     
-    //4
+    //4 update clusters points, and returning the maximum change in points
     //guy
-    int  update_clusters(struct cluster* clusters,double epsilon){
+    double  update_clusters(struct cluster* clusters,double epsilon){
 
         return 0;
     }
