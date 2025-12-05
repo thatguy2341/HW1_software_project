@@ -109,6 +109,7 @@ int main(int argc, char *argv[])
 
         //need to assign the first k point as clusters
         struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
+
         for(int i=0;i<k;i++){
             // Create zero vector:
             zero = create_zero_vector(dim);
@@ -117,7 +118,9 @@ int main(int argc, char *argv[])
             clusters[i].point=current;
             clusters[i].sum=zero;
             clusters[i].points_assigned=0;
+            current=current->next;
         }
+        return clusters;
     }
 
     struct vector* create_zero_vector(int dim){
@@ -189,9 +192,53 @@ int main(int argc, char *argv[])
     
     //4 update clusters points, and returning the maximum change in points
     //guy
-    double  update_clusters(struct cluster* clusters,double epsilon){
+    double  update_clusters(struct cluster* clusters, double epsilon){
+        for (struct cluster* curr_cluster = clusters; curr_cluster != NULL; curr_cluster++) {
+            if (curr_cluster->points_assigned == 0) {
+                continue; // Avoid division by zero
+            }
 
+            // copy point to compare later:
+            struct vector* old_point = malloc(sizeof(struct vector));
+            old_point = copy_vector(curr_cluster->point);
+
+
+            // get the sum vector:
+            struct cord* sum_cord = curr_cluster->sum->cords;
+            // get the cords of the point of the cluser:
+            struct cord* point_cord = curr_cluster->point->cords;
+
+            while (sum_cord != NULL && point_cord != NULL) {
+                double new_value = sum_cord->value / curr_cluster->points_assigned;
+                double change = fabs(new_value - point_cord->value);
+                point_cord->value = new_value;
+
+                sum_cord = sum_cord->next;
+                point_cord = point_cord->next;
+            }
+
+            return distance(old_point, curr_cluster->point);
+        }
         return 0;
+    }
+
+    struct vector* copy_vector(struct vector* original){
+        struct vector* copy = malloc(sizeof(struct vector));
+        struct cord* original_cord = original->cords;
+        struct cord* copy_cord = malloc(sizeof(struct cord));
+        copy->cords = copy_cord;
+
+        while (original_cord != NULL) {
+            copy_cord->value = original_cord->value;
+            if (original_cord->next != NULL) {
+                copy_cord->next = malloc(sizeof(struct cord));
+                copy_cord = copy_cord->next;
+            } else {
+                copy_cord->next = NULL;
+            }
+            original_cord = original_cord->next;
+        }
+        return copy;
     }
 
     
