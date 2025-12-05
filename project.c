@@ -94,15 +94,48 @@ int main(int argc, char *argv[])
 }
     //2 recieve args[2] and for each line create cluster_points and add to clusters
     //guy
-    struct clusdter* create_clusters(char* cluster_input,int k,struct vector* head_vec){
+    struct cluster* create_clusters(char* cluster_input,int k,struct vector* head_vec){
         struct vector* current=head_vec;
-        //need to crate vector in the right size woth all zeros.
-        struct vector zero;
+        // Get dimansion of vectors:
+        int dim = 0;
+        struct cord* curr_cord = current->cords;
+        while (curr_cord != NULL) {
+            dim++;
+            curr_cord = curr_cord->next;
+        }
+
+        // Initialize zero vector for sum
+        struct vector* zero;
+
         //need to assign the first k point as clusters
         struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
         for(int i=0;i<k;i++){
- 
+            // Create zero vector:
+            zero = create_zero_vector(dim);
+
+            // Take care of clusters:
+            clusters[i].point=current;
+            clusters[i].sum=zero;
+            clusters[i].points_assigned=0;
         }
+    }
+
+    struct vector* create_zero_vector(int dim){
+        struct vector* zero;
+        zero = malloc(sizeof(struct vector));
+        struct cord* start_cord = malloc(sizeof(struct cord));
+        start_cord->value = 0.0;
+        start_cord->next = NULL;
+        zero->cords = start_cord;
+        struct cord* last_cord = start_cord;
+        for (int j = 1; j < dim; j++) {
+            struct cord* new_cord = malloc(sizeof(struct cord));
+            new_cord->value = 0.0;
+            new_cord->next = NULL;
+            last_cord->next = new_cord;
+            last_cord = new_cord;
+        }
+        return zero;
     }
     
 
