@@ -14,7 +14,9 @@ def print_clusters(clusters):
 	for cluster in clusters:
 		st=""
 		for x in range(len(cluster)):
-		st+='{0:.4f}'.format(cluster[x])
+			if x!=0:
+				st+=','
+			st+='{0:.4f}'.format(cluster[x])
 		print(st)
 #asigned each point to her closest cluster, and update clusters_sum and clusters_count if needed
 def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count):
@@ -32,12 +34,19 @@ def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_c
 		before_cluster = points_to_clusters[t]
 		points_to_clusters[t]= closest_cluster
 		
-		if before_cluster != closest_cluster:
+		#we wont subtruct from sum and count if the point was not assigned before
+		if (before_cluster == -1):
+			clusters_count[closest_cluster] += 1
+			for j in range(len(points[t])):
+				clusters_sum[closest_cluster][j] += points[t][j]
+		
+		if (before_cluster != closest_cluster and before_cluster != -1):
+			clusters_count[closest_cluster] += 1
+			clusters_count[before_cluster] -= 1
 			for j in range(len(points[t])):
 				clusters_sum[closest_cluster][j] += points[t][j]
 				clusters_sum[before_cluster][j] -= points[t][j]
-				clusters_count[closest_cluster] += 1
-				clusters_count[before_cluster] -= 1
+
 
 #update clusters after the recent change in the assigned points,returning the max change in any cluster
 def updated_clusters(clusters, clusters_sum,clusters_count, epsilon):
@@ -55,11 +64,11 @@ def updated_clusters(clusters, clusters_sum,clusters_count, epsilon):
 			max_diff = diff
 		clusters[i] = new_cluster
 	return max_diff
-#reaf point from std
+#read point from std
 def read_points():
 	#pts is list of list of floats
 	points = []
-	all_input = sys.stdun.read.strip()
+	all_input = sys.stdin.read().strip()
 	lines=all_input.splitlines()
 
 	for line in lines:
@@ -74,12 +83,12 @@ def read_points():
 	return points
 
 #main function
-def kmeans(k: int, iters: int):
+def kmeans(k: int, max_iters: int):
 	epsilon = 0.001
 	points = read_points()
 	points_num = len(points)
 	#point in i place in order is assign to cluster points_to_clusters[i]
-	points_to_clusters = [0 for x in range(points_num)]
+	points_to_clusters = [-1 for x in range(points_num)]
 
 	# all points must have same dimension
 	dim = len(points[0])
@@ -102,10 +111,10 @@ def kmeans(k: int, iters: int):
 	clusters_sum=[[0.0]*dim for x in range(k)]
 	clusters_count=[0 for x in range(k)]
 	#main algo loop
-	for i in range (iters)
+	for i in range (iters):
 		updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count)
 		diff = updated_clusters(clusters,clusters_sum,clusters_count,epsilon)
-		if(diff<epsilon)
+		if(diff<epsilon):
 			break
 	#we finish updating, printing the clusters
 	print_clusters(clusters)
@@ -114,18 +123,18 @@ def kmeans(k: int, iters: int):
 
 if __name__ == '__main__':
 	if len(sys.argv) < 3:
-		print("Usage: python project.py <k> <iters>  (points from stdin, one csv row per point)")
+		print("problem with input args")"
 		sys.exit(1)
 
 	try:
-		k_ = int(sys.argv[1])
-		iters_ = int(sys.argv[2])
+		k = int(sys.argv[1])
+		max_iters = int(sys.argv[2])
 	except ValueError:
 		print("k and iters must be integers")
 		return 0
 	
 
     
-	kmeans(k, iters)
+	kmeans(k, max_iters)
 
 	sys.exit(0)
