@@ -1,5 +1,3 @@
-
-
 import sys
 import math
 
@@ -18,6 +16,7 @@ def print_clusters(clusters):
 				st+=','
 			st+='{0:.4f}'.format(cluster[x])
 		print(st)
+
 #asigned each point to her closest cluster, and update clusters_sum and clusters_count if needed
 def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count):
 	for t in range(len(points)):
@@ -32,7 +31,7 @@ def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_c
 				closest_cluster = i
 		
 		before_cluster = points_to_clusters[t]
-		points_to_clusters[t]= closest_cluster
+		points_to_clusters[t] = closest_cluster
 		
 		#we wont subtruct from sum and count if the point was not assigned before
 		if (before_cluster == -1):
@@ -99,19 +98,19 @@ def kmeans(k: int, max_iters: int):
 			return 0
 	
 	if(k<=1 or k>=len(points)):
-        print("Incorrect number of clusters!")
-        return 0
-    
-    if(iter<=1 or iter>=800):
-        print("Incorrect maximum iteration!")
-        return 0
+		print("Incorrect number of clusters!")
+		return 0
+	
+	if(max_iters<=1 or max_iters>=800):
+		print("Incorrect maximum iteration!")
+		return 0
 	#clusters are the first k points
 	clusters = points[:k]
 	#initialize clusters_sum and clusters_count,updating happens in updated_points
 	clusters_sum=[[0.0]*dim for x in range(k)]
 	clusters_count=[0 for x in range(k)]
 	#main algo loop
-	for i in range (iters):
+	for i in range (max_iters):
 		updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count)
 		diff = updated_clusters(clusters,clusters_sum,clusters_count,epsilon)
 		if(diff<epsilon):
@@ -123,7 +122,7 @@ def kmeans(k: int, max_iters: int):
 
 if __name__ == '__main__':
 	if len(sys.argv) < 3:
-		print("problem with input args")"
+		print("problem with input args")
 		sys.exit(1)
 
 	try:
@@ -131,10 +130,8 @@ if __name__ == '__main__':
 		max_iters = int(sys.argv[2])
 	except ValueError:
 		print("k and iters must be integers")
-		return 0
-	
+		sys.exit(1)
 
-    
 	kmeans(k, max_iters)
 
 	sys.exit(0)
