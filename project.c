@@ -24,8 +24,10 @@ struct cluster{
 double distance(struct vector* x,struct vector* y){
         double distance=0;
         double sum_square=0;
-        struct cord *x_current_cord=x->cords;
-        struct cord *y_current_cord=y->cords;
+        struct cord *x_current_cord; 
+        x_current_cord = x->cords;
+        struct cord *y_current_cord;
+        y_current_cord = y->cords;
         while (y_current_cord!=NULL&&x_current_cord!=NULL){
             double diff=(x_current_cord->value)-(y_current_cord->value);
             sum_square+=diff*diff;
@@ -51,12 +53,15 @@ void add_vector(struct vector* base,struct vector* add,int operation){
 struct vector* create_zero_vector(int dim){
         struct vector* zero;
         zero = malloc(sizeof(struct vector));
-        struct cord* start_cord = malloc(sizeof(struct cord));
+        struct cord* start_cord;
+        start_cord = malloc(sizeof(struct cord));
         start_cord->value = 0.0;
         start_cord->next = NULL;
         zero->cords = start_cord;
-        struct cord* last_cord = start_cord;
-        for (int j = 1; j < dim; j++) {
+        struct cord* last_cord;
+        last_cord = start_cord;
+        int j;
+        for (j = 1; j < dim; j++) {
             struct cord* new_cord = malloc(sizeof(struct cord));
             new_cord->value = 0.0;
             new_cord->next = NULL;
@@ -89,6 +94,9 @@ struct vector* copy_vector(struct vector* original){
     //guy
 struct cluster* create_clusters(int k,struct vector* head_vec){
         struct vector* current=head_vec;
+        // Initialize zero vector for sum
+        struct vector* zero;
+        int i;
         // Get dimansion of vectors:
         int dim = 0;
         struct cord* curr_cord = current->cords;
@@ -97,13 +105,10 @@ struct cluster* create_clusters(int k,struct vector* head_vec){
             curr_cord = curr_cord->next;
         }
 
-        // Initialize zero vector for sum
-        struct vector* zero;
-
+        
         //need to assign the first k point as clusters
         struct cluster *clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
-
-        for(int i=0;i<k;i++){
+        for(i=0;i<k;i++){
             // Create zero vector:
             zero = create_zero_vector(dim);
 
@@ -128,7 +133,8 @@ void update_points(struct cluster* clusters,struct vector* head_vec, int k){
             int current_cluster=current->cluster_index;
             int next_cluster_index=0;
             //check which cluster is the closest to the point
-            for(int i=1;i<k;i++){ 
+            int i;
+            for(i=1;i<k;i++){ 
                 double temp=distance(current, clusters[i].point);
                 if(temp<min){  
                     min=temp;
@@ -176,19 +182,22 @@ void free_vector(struct vector* vec){
 //4 update clusters points, and returning the maximum change in points
 //guy
 double  update_clusters(struct cluster* clusters,int k){
+        int i;
         //change L for to pointer beacause clusters is an array
         struct cluster *curr_cluster = &clusters[0];
         double max_change = 0;
         double current_change = 0;
-        for (int i=0; i < k; i++) {
+        for (i=0; i < k; i++) {
+            // copy point to compare later:
+            struct vector* old_point;
             curr_cluster = &clusters[i];
             // need to check what we suppose to do if the cluster has no points assigned!
             if (curr_cluster->points_assigned == 0) {   
                 continue; // Avoid division by zero
             }
 
-            // copy point to compare later:
-            struct vector* old_point = copy_vector(curr_cluster->point);
+            
+            old_point = copy_vector(curr_cluster->point);
 
             // get the sum vector:
             struct cord* sum_cord = curr_cluster->sum->cords;
@@ -217,7 +226,8 @@ double  update_clusters(struct cluster* clusters,int k){
 
     //6 print clusters
 void print_clusters(struct cluster* clusters, int k) {
-    for (int i = 0; i < k; i++) {
+    int i;
+    for (i = 0; i < k; i++) {
         struct cord* curr = clusters[i].point->cords;
 
         while (curr != NULL) {
@@ -235,19 +245,28 @@ void print_clusters(struct cluster* clusters, int k) {
 //main function
 int main(int argc, char *argv[])
 {   //input reading.
-    int k=atoi(argv[1]);
+    int k, iter;
+    iter = 400; // defualt value
     double epsilon=0.001;
-    int iter=atoi(argv[2]);
     //inputfile reader from std_in
     //creating points
     struct vector *head_vec, *curr_vec, *next_vec;
     struct cord *head_cord, *curr_cord, *next_cord;
-    int counter=0;
+    int counter=0, i;
     //int i=0, j=0 , cols=0;
     double n;
     char c;
-    
-    
+    struct cluster* clusters;
+
+    if (argc == 2){
+        iter=atoi(argv[2]);
+    }
+    else{
+        printf("Invalid number of arguments!");
+        return 0;
+    }
+    k=atoi(argv[1]);
+
     head_cord = malloc(sizeof(struct cord));
     curr_cord = head_cord;
     curr_cord->next = NULL;
@@ -262,11 +281,12 @@ int main(int argc, char *argv[])
 
         if (c == '\n')
         {
+            char check;
             curr_cord->value = n;
             curr_vec->cords = head_cord;
             counter++;
            //check if end of file
-           char check=getchar();
+           check=getchar();
            if(check==EOF){
             break;
            }
@@ -299,10 +319,10 @@ int main(int argc, char *argv[])
         return 0;
     }
     //create clusters points
-    struct cluster* clusters =  create_clusters(k,head_vec);
+    clusters =  create_clusters(k,head_vec);
    //main loop
     
-    for(int i=0;i<iter;i++){
+    for(i=0;i<iter;i++){
 
         update_points(clusters,head_vec,k);
         double max_changed = update_clusters(clusters,k);
@@ -314,7 +334,7 @@ int main(int argc, char *argv[])
     print_clusters(clusters,k);
     
     //free memory
-    for (int i = 0; i < k; i++)
+    for (i = 0; i < k; i++)
     {
         free_vector(clusters[i].sum);
         free_vector(clusters[i].point);
