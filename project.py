@@ -10,12 +10,10 @@ def distance(vector1, vector2):
 #print the clusters, each in a row
 def print_clusters(clusters):
 	for cluster in clusters:
-		st=""
+		st=[]
 		for x in range(len(cluster)):
-			if x!=0:
-				st+=','
-			st+='{0:.4f}'.format(cluster[x])
-		print(st)
+			st.append('{0:.4f}'.format(cluster[x]))
+		print(','.join(st))
 
 #asigned each point to her closest cluster, and update clusters_sum and clusters_count if needed
 def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count):
@@ -121,17 +119,26 @@ def kmeans(k: int, max_iters: int):
 
 
 if __name__ == '__main__':
-	if len(sys.argv) < 3:
-		print("problem with input args")
+	
+	if len(sys.argv) < 2 or len(sys.argv) > 4:
+		print("problem with input args!")
 		sys.exit(1)
 
 	try:
 		k = int(sys.argv[1])
-		max_iters = int(sys.argv[2])
 	except ValueError:
 		print("k and iters must be integers")
 		sys.exit(1)
-
+	
+	if len(sys.argv) == 3:
+		try:
+			max_iters = int(sys.argv[2])
+		except ValueError:
+			print("k and iters must be integers")
+			sys.exit(1)
+	else:
+		max_iters = 400
+	
 	kmeans(k, max_iters)
 
 	sys.exit(0)
