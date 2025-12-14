@@ -19,6 +19,16 @@ struct cluster{
     int points_assigned;
 };
 
+/* Safe malloc wrapper that checks for allocation failure */
+void* safe_malloc(size_t size) {
+    void* ptr = malloc(size);
+    if (ptr == NULL) {
+        printf( "Memory allocation failed!\n");
+        exit(0);
+    }
+    return ptr;
+}
+
 /* all help function declarations */
 /* distance between points */
 double distance(struct vector* x,struct vector* y){
@@ -55,14 +65,14 @@ struct vector* create_zero_vector(int dim){
         struct cord* start_cord;
         struct cord* last_cord;
         int j;
-        zero = malloc(sizeof(struct vector));
-        start_cord = malloc(sizeof(struct cord));
+        zero = safe_malloc(sizeof(struct vector));
+        start_cord = safe_malloc(sizeof(struct cord));
         start_cord->value = 0.0;
         start_cord->next = NULL;
         zero->cords = start_cord;
         last_cord = start_cord;
         for (j = 1; j < dim; j++) {
-            struct cord* new_cord = malloc(sizeof(struct cord));
+            struct cord* new_cord = safe_malloc(sizeof(struct cord));
             new_cord->value = 0.0;
             new_cord->next = NULL;
             last_cord->next = new_cord;
@@ -72,15 +82,15 @@ struct vector* create_zero_vector(int dim){
     }
 
 struct vector* copy_vector(struct vector* original){
-        struct vector* copy = malloc(sizeof(struct vector));
+        struct vector* copy = safe_malloc(sizeof(struct vector));
         struct cord* original_cord = original->cords;
-        struct cord* copy_cord = malloc(sizeof(struct cord));
+        struct cord* copy_cord = safe_malloc(sizeof(struct cord));
         copy->cords = copy_cord;
 
         while (original_cord != NULL) {
             copy_cord->value = original_cord->value;
             if (original_cord->next != NULL) {
-                copy_cord->next = malloc(sizeof(struct cord));
+                copy_cord->next = safe_malloc(sizeof(struct cord));
                 copy_cord = copy_cord->next;
             } else {
                 copy_cord->next = NULL;
@@ -108,7 +118,7 @@ struct cluster* create_clusters(int k,struct vector* head_vec){
 
         
         /* need to assign the first k point as clusters */
-        clusters=(struct cluster*)malloc(sizeof(struct cluster)*k);
+        clusters=(struct cluster*)safe_malloc(sizeof(struct cluster)*k);
         for(i=0;i<k;i++){
             /* Create zero vector: */
             zero = create_zero_vector(dim);
@@ -273,11 +283,11 @@ int main(int argc, char *argv[])
     }
     k=atoi(argv[1]);
 
-    head_cord = malloc(sizeof(struct cord));
+    head_cord = safe_malloc(sizeof(struct cord));
     curr_cord = head_cord;
     curr_cord->next = NULL;
 
-    head_vec = malloc(sizeof(struct vector));
+    head_vec = safe_malloc(sizeof(struct vector));
     curr_vec = head_vec;
     curr_vec->next = NULL;
     head_vec->cluster_index = -1;
@@ -298,19 +308,19 @@ int main(int argc, char *argv[])
            }
             ungetc(check,stdin);
             
-            curr_vec->next = malloc(sizeof(struct vector));
+            curr_vec->next = safe_malloc(sizeof(struct vector));
             curr_vec = curr_vec->next;
             curr_vec->next = NULL;
             curr_vec->cluster_index = -1;
             
-            head_cord = malloc(sizeof(struct cord));
+            head_cord = safe_malloc(sizeof(struct cord));
             curr_cord = head_cord;
             curr_cord->next = NULL;
             continue;
         }
 
         curr_cord->value = n;
-        curr_cord->next = malloc(sizeof(struct cord));
+        curr_cord->next = safe_malloc(sizeof(struct cord));
         curr_cord = curr_cord->next;
         curr_cord->next = NULL;
     }
