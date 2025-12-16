@@ -204,8 +204,9 @@ double  update_clusters(struct cluster* clusters,int k,struct vector* head_vec){
         /*checking for empty clusters and reassigning them*/
         for(i=0;i<k;i++){
             if(clusters[i].points_assigned==0){
-                curr_cluster=&clusters[i];
                 int cluter_index_to_reassign;
+                curr_cluster=&clusters[i];
+                
                 cluter_index_to_reassign = head_vec->cluster_index;
                 
                 curr_cluster->point=copy_vector(head_vec);
@@ -311,7 +312,7 @@ int main(int argc, char *argv[])
 
         if (c == '\n')
         {
-            char check;
+            int check;
             curr_cord->value = n;
             curr_vec->cords = head_cord;
             counter++;
