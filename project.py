@@ -46,8 +46,22 @@ def	 updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_c
 
 
 #update clusters after the recent change in the assigned points,returning the max change in any cluster
-def updated_clusters(clusters, clusters_sum,clusters_count, epsilon):
+def updated_clusters(clusters, clusters_sum,clusters_count, epsilon,points,points_to_clusters):
 	max_diff = 0.0
+	for i in range(len(clusters)):
+		if clusters_count[i] == 0:
+			previous_index=points_to_clusters[0]
+			points_to_clusters[0] = i
+
+			clusters_count[previous_index]  -=1
+			clusters_count[i] += 1
+			
+			for j in range(len(clusters[0])):
+
+				clusters_sum[previous_index][j]-=points[0][j]
+				clusters_sum[i][j] = points[0][j]
+			
+			
 	for i in range (len (clusters)):
 		new_cluster = [0.0 for x in range(len(clusters[0]))]	
 		if clusters_count[i] > 0:
@@ -110,7 +124,7 @@ def kmeans(k: int, max_iters: int):
 	#main algo loop
 	for i in range (max_iters):
 		updated_points(points,points_to_clusters, clusters, clusters_sum,clusters_count)
-		diff = updated_clusters(clusters,clusters_sum,clusters_count,epsilon)
+		diff = updated_clusters(clusters,clusters_sum,clusters_count,epsilon,points,points_to_clusters)
 		if(diff<epsilon):
 			break
 	#we finish updating, printing the clusters

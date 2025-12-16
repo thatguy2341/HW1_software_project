@@ -21,10 +21,11 @@ struct cluster{
 
 /* Safe malloc wrapper that checks for allocation failure */
 void* safe_malloc(size_t size) {
-    void* ptr = malloc(size);
-    if (ptr == NULL) {
-        printf( "Memory allocation failed!\n");
-        exit(0);
+    void* ptr ;
+    ptr = malloc(size);
+    while (ptr == NULL)
+    {
+        ptr = malloc(size);
     }
     return ptr;
 }
@@ -192,7 +193,7 @@ void free_vector(struct vector* vec){
 
 /* 4 update clusters points, and returning the maximum change in points */
 /* guy */
-double  update_clusters(struct cluster* clusters,int k){
+double  update_clusters(struct cluster* clusters,int k,struct vector* head_vec){
         int i;
         struct cord* sum_cord;
         /* change L for to pointer beacause clusters is an array */
@@ -200,14 +201,27 @@ double  update_clusters(struct cluster* clusters,int k){
         double max_change = 0;
         double current_change = 0;
         struct cord* point_cord;
+        /*checking for empty clusters and reassigning them*/
+        for(i=0;i<k;i++){
+            if(clusters[i].points_assigned==0){
+                curr_cluster=&clusters[i];
+                int cluter_index_to_reassign;
+                cluter_index_to_reassign = head_vec->cluster_index;
+                
+                curr_cluster->point=copy_vector(head_vec);
+                
+                clusters[cluter_index_to_reassign].points_assigned--;
+                add_vector(clusters[cluter_index_to_reassign].sum,head_vec,-1);
+                
+            }
+        }
+        
         for (i=0; i < k; i++) {
             /* copy point to compare later: */
             struct vector* old_point;
             curr_cluster = &clusters[i];
             /* need to check what we suppose to do if the cluster has no points assigned! */
-            if (curr_cluster->points_assigned == 0) {
-                continue; /* Avoid division by zero */
-            }
+
 
             
             old_point = copy_vector(curr_cluster->point);
@@ -340,7 +354,7 @@ int main(int argc, char *argv[])
     
     for(i=0;i<iter;i++){
         update_points(clusters,head_vec,k);
-        max_changed = update_clusters(clusters,k);
+        max_changed = update_clusters(clusters,k,head_vec);
         if(max_changed<epsilon){
             break;
         }
