@@ -268,7 +268,7 @@ void print_clusters(struct cluster* clusters, int k) {
         printf("\n");
     }
 }
- 
+
 
 /* main function */
 int main(int argc, char *argv[])
@@ -294,9 +294,17 @@ int main(int argc, char *argv[])
     }
     else if (argc !=2){
         printf("Invalid number of arguments!");
-        return 0;
+        return 1;
     }
     k=atoi(argv[1]);
+    if(k<=0){
+        printf("Invalid number of clusters!");
+        return 1;
+    }
+    if(iter<=1||iter>=800){
+        printf("Incorrect maximum iteration!");
+        return 1;
+    }
 
     head_cord = safe_malloc(sizeof(struct cord));
     curr_cord = head_cord;
@@ -341,14 +349,15 @@ int main(int argc, char *argv[])
     }
     
     /* checking correct input */
-    if(k<=1||k>=counter){
+    if(counter==0){
+        printf("An Error Has Occurred");
+        return 1;
+    }
+    if(k>=counter){
         printf("Incorrect number of clusters!");
-        return 0;
+        return 1;
     }
-    if(iter<=1||iter>=800){
-        printf("Incorrect maximum iteration!");
-        return 0;
-    }
+
     /* create clusters points */
     clusters = create_clusters(k,head_vec);
     /* main loop */

@@ -83,6 +83,8 @@ def read_points():
 	lines=all_input.splitlines()
 
 	for line in lines:
+		if not line.strip():
+			continue
 		coards_string=line.split(',')
 		current_point=[]
 		
@@ -97,6 +99,9 @@ def read_points():
 def kmeans(k: int, max_iters: int):
 	epsilon = 0.001
 	points = read_points()
+	if not points:
+		print("An Error Has Occurred")
+		return 0
 	points_num = len(points)
 	#point in i place in order is assign to cluster points_to_clusters[i]
 	points_to_clusters = [-1 for x in range(points_num)]
@@ -134,7 +139,7 @@ def kmeans(k: int, max_iters: int):
 
 if __name__ == '__main__':
 	
-	if len(sys.argv) < 2 or len(sys.argv) > 4:
+	if len(sys.argv) < 2 or len(sys.argv) > 3:
 		print("problem with input args!")
 		sys.exit(1)
 
