@@ -268,7 +268,27 @@ void print_clusters(struct cluster* clusters, int k) {
         printf("\n");
     }
 }
-
+/*return + if point is integer  - if not*/
+int is_integar(char* str){
+    int i;
+    if(str==NULL || str[0]=='\0'){
+        return -1;
+    }
+    i=0;
+    if((str[0]=='-'||str[0]=='+')){
+        i=1;
+        if(str[i]=='\0'){
+            return -1;
+        }
+    }
+    
+    for(;str[i]!='\0';i++){
+        if(str[i]<'0'||str[i]>'9'){
+            return -1;
+        }
+    }
+    return 1;
+}
 
 /* main function */
 int main(int argc, char *argv[])
@@ -290,15 +310,25 @@ int main(int argc, char *argv[])
     iter = 400; /* defualt value */
     epsilon=0.001;
     if (argc == 3){
+        if(is_integar(argv[2])==-1){
+            printf("Incorrect maximum iteration!");
+            return 1;
+        }
         iter=atoi(argv[2]);
     }
     else if (argc !=2){
         printf("An Error Has Occurred");
         return 1;
     }
+    if (is_integar(argv[1])==-1)
+    {
+        printf("Incorrect number of clusters!");
+        return 1;
+    }
     k=atoi(argv[1]);
+
     if(k<=0){
-        printf("Invalid number of clusters!");
+        printf("Incorrect number of clusters!");
         return 1;
     }
     if(iter<=1||iter>=800){

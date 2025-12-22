@@ -89,6 +89,11 @@ def read_points():
 		current_point=[]
 		
 		for coard in coards_string:
+			try:
+				coard_float = float(coard)
+			except ValueError:
+				print("An Error Has Occurred")
+				sys.exit(1)
 			coard_float=float(coard)
 			current_point.append(coard_float)
 		points.append(current_point)
@@ -146,14 +151,14 @@ if __name__ == '__main__':
 	try:
 		k = int(sys.argv[1])
 	except ValueError:
-		print("An Error Has Occurred")
+		print("Incorrect number of clusters!")
 		sys.exit(1)
 	
 	if len(sys.argv) == 3:
 		try:
 			max_iters = int(sys.argv[2])
 		except ValueError:
-			print("An Error Has Occurred")
+			print("Incorrect maximum iteration!")
 			sys.exit(1)
 	else:
 		max_iters = 400
