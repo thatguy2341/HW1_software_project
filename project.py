@@ -101,7 +101,7 @@ def kmeans(k: int, max_iters: int):
 	points = read_points()
 	if not points:
 		print("An Error Has Occurred")
-		return 0
+		sys.exit(1)
 	points_num = len(points)
 	#point in i place in order is assign to cluster points_to_clusters[i]
 	points_to_clusters = [-1 for x in range(points_num)]
@@ -111,16 +111,16 @@ def kmeans(k: int, max_iters: int):
 	
 	for p in points:
 		if len(p) != dim:
-			print("Inconsistent dimensions in input")
-			return 0
+			print("An Error Has Occurred")
+			sys.exit(1)
 	
 	if(k<=1 or k>=len(points)):
 		print("Incorrect number of clusters!")
-		return 0
+		sys.exit(1)
 	
 	if(max_iters<=1 or max_iters>=800):
 		print("Incorrect maximum iteration!")
-		return 0
+		sys.exit(1)
 	#clusters are the first k points
 	clusters = points[:k]
 	#initialize clusters_sum and clusters_count,updating happens in updated_points
@@ -140,20 +140,20 @@ def kmeans(k: int, max_iters: int):
 if __name__ == '__main__':
 	
 	if len(sys.argv) < 2 or len(sys.argv) > 3:
-		print("problem with input args!")
+		print("An Error Has Occurred")
 		sys.exit(1)
 
 	try:
 		k = int(sys.argv[1])
 	except ValueError:
-		print("k and iters must be integers")
+		print("An Error Has Occurred")
 		sys.exit(1)
 	
 	if len(sys.argv) == 3:
 		try:
 			max_iters = int(sys.argv[2])
 		except ValueError:
-			print("k and iters must be integers")
+			print("An Error Has Occurred")
 			sys.exit(1)
 	else:
 		max_iters = 400

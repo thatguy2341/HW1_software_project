@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
         iter=atoi(argv[2]);
     }
     else if (argc !=2){
-        printf("Invalid number of arguments!");
+        printf("An Error Has Occurred");
         return 1;
     }
     k=atoi(argv[1]);
