@@ -346,8 +346,17 @@ int main(int argc, char *argv[])
     head_vec->cluster_index = -1;
     
     while (scanf("%lf%c", &n, &c) == 2)
-    {
-
+    {   
+        if (c == ',') {
+        int next_char;
+        next_char = getchar();
+        if (next_char == '\n') {
+            printf("An Error Has Occurred");
+            return 1;
+        }
+        
+        ungetc(next_char, stdin);
+        }
         if (c == '\n')
         {
             int check;
@@ -376,6 +385,10 @@ int main(int argc, char *argv[])
         curr_cord->next = safe_malloc(sizeof(struct cord));
         curr_cord = curr_cord->next;
         curr_cord->next = NULL;
+    }
+    if( feof(stdin)==0){
+        printf("An Error Has Occurred");
+        return 1;
     }
     
     /* checking correct input */
