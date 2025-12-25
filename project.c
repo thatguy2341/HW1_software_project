@@ -289,6 +289,26 @@ int is_integar(char* str){
     }
     return 1;
 }
+void free_memory(struct cluster* clusters, int k, struct vector* head_vec){
+    int i;
+    struct vector* curr_vec;
+    struct vector* next_vec;
+    for (i = 0; i < k; i++)
+    {
+        free_vector(clusters[i].sum);
+        free_vector(clusters[i].point);
+
+    }
+    free(clusters);
+    curr_vec = head_vec;
+    while (curr_vec != NULL)
+    {
+        next_vec = curr_vec->next;
+        free_vector(curr_vec);
+        curr_vec = next_vec;
+    }
+    free(curr_vec);
+}
 
 /* main function */
 int main(int argc, char *argv[])
@@ -296,7 +316,7 @@ int main(int argc, char *argv[])
     int k, iter;
     double epsilon;
     double max_changed;
-    struct vector* next_vec;
+    
     /* inputfile reader from std_in */
     /* creating points */
     struct vector *head_vec, *curr_vec;
@@ -388,16 +408,19 @@ int main(int argc, char *argv[])
     }
     if( feof(stdin)==0){
         printf("An Error Has Occurred");
+        free_memory(NULL,0,head_vec);
         return 1;
     }
     
     /* checking correct input */
     if(counter==0){
         printf("An Error Has Occurred");
+        free_memory(NULL,0,head_vec);
         return 1;
     }
     if(k>=counter){
         printf("Incorrect number of clusters!");
+        free_memory(NULL,0,head_vec);
         return 1;
     }
 
@@ -416,21 +439,7 @@ int main(int argc, char *argv[])
     print_clusters(clusters,k);
     
     /* free memory */
-    for (i = 0; i < k; i++)
-    {
-        free_vector(clusters[i].sum);
-        free_vector(clusters[i].point);
-
-    }
-    free(clusters);
-    curr_vec = head_vec;
-    while (curr_vec != NULL)
-    {
-        next_vec = curr_vec->next;
-        free_vector(curr_vec);
-        curr_vec = next_vec;
-    }
-    free(curr_vec);
+    free_memory(clusters, k, head_vec);
     return 0;
 }
 
